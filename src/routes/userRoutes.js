@@ -164,6 +164,9 @@ router.get('/:id', userController.getById);
  *   put:
  *     summary: Update a user
  *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *       - apiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -205,6 +208,9 @@ router.put('/:id', authenticate, userController.update);
  *   delete:
  *     summary: Delete a user
  *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *       - apiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -235,6 +241,9 @@ router.delete('/:id', authenticate, userController.delete);
  *   patch:
  *     summary: Activate user account
  *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *       - apiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -270,6 +279,9 @@ router.patch('/:id/activate', authenticate, userController.activate);
  *   patch:
  *     summary: Suspend user account
  *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *       - apiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -305,6 +317,9 @@ router.patch('/:id/suspend', authenticate, userController.suspend);
  *   post:
  *     summary: Upload profile picture
  *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *       - apiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id

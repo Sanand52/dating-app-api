@@ -92,6 +92,52 @@ class AuthService {
         };
     }
 
+    // ── Forgot Password (Request OTP) ────────────────────
+    async forgotPassword(email) {
+        const user = await userRepository.findByEmail(email);
+        if (!user) throw new Error('No account found with this email');
+        if (user.accountStatus === 'deleted') throw new Error('Account has been deleted');
+
+        // Generate 6-digit OTP
+        const otp = crypto.randomInt(100000, 999999).toString();
+        const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+        // Save OTP to user
+        await userRepository.updateOtp(user.id, otp, otpExpiry);
+
+        // Send OTP via email
+        await emailService.sendOtpEmail(user.email, otp, user.firstName);
+
+        return { message: 'Password reset OTP sent to your email' };
+    }
+
+    // ── Reset Password (Verify OTP + New Password) ──────────
+    async resetPassword(email, otp, newPassword) {
+        const user = await userRepository.findByEmail(email);
+        if (!user) throw new Error('No account found with this email');
+        if (user.accountStatus === 'deleted') throw new Error('Account has been deleted');
+
+        // Validate OTP
+        if (!user.otp) throw new Error('No OTP requested. Please request a new OTP.');
+        if (new Date() > new Date(user.otpExpiry)) throw new Error('OTP has expired. Please request a new one.');
+        if (user.otp !== otp) throw new Error('Invalid OTP');
+
+        // Hash new password
+        const salt = await bcrypt.genSalt(10);
+        const passwordHash = await bcrypt.hash(newPassword, salt);
+
+        // Update password and clear OTP
+        await userRepository.update(user.id, {
+            passwordHash,
+            otp: null,
+            otpExpiry: null,
+            otpVerified: true,
+            isVerified: true
+        });
+
+        return { message: 'Password reset successfully' };
+    }
+
     // ── Token Generation ────────────────────────────────────
     _generateToken(user) {
         const payload = {
