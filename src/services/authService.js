@@ -50,10 +50,13 @@ class AuthService {
         // Save OTP to user
         await userRepository.updateOtp(user.id, otp, otpExpiry);
 
-        // Send OTP via email (fire-and-forget — don't block the response)
-        emailService.sendOtpEmail(user.email, otp, user.firstName).catch(err => {
-            console.error('❌ Failed to send OTP email:', err.message);
-        });
+        // Send OTP via email (await to catch delivery errors)
+        try {
+            await emailService.sendOtpEmail(user.email, otp, user.firstName);
+        } catch (emailErr) {
+            console.error('❌ Failed to send OTP email:', emailErr.message);
+            throw new Error('OTP generated but failed to send email. Please try again.');
+        }
 
         return { message: 'OTP sent to your email' };
     }

@@ -14,16 +14,22 @@ class EmailService {
             tls: {
                 rejectUnauthorized: false,
             },
-            pool: true,           // reuse connections
-            maxConnections: 3,    // keep up to 3 connections
-            maxMessages: 100,     // messages per connection before reconnecting
+            pool: true,              // reuse connections
+            maxConnections: 3,
+            maxMessages: 100,
+            connectionTimeout: 10000, // 10s to establish connection
+            greetingTimeout: 10000,   // 10s for SMTP greeting
+            socketTimeout: 15000,     // 15s for socket inactivity
+            logger: process.env.NODE_ENV === 'development',
+            debug: process.env.NODE_ENV === 'development',
         });
 
-        // Warm up SMTP connection on startup
+        // Verify SMTP connection on startup
         this.transporter.verify().then(() => {
             console.log('✅ SMTP server connected and ready');
         }).catch(err => {
-            console.error('⚠️  SMTP connection warning:', err.message);
+            console.error('⚠️  SMTP connection failed:', err.message);
+            console.error('   Host:', process.env.EMAIL_HOST, '| Port:', process.env.EMAIL_PORT);
         });
     }
 
