@@ -3,18 +3,24 @@ const { Resend } = require('resend');
 class EmailService {
 
     constructor() {
-        this.resend = new Resend(process.env.RESEND_API_KEY);
+        this.apiKey = process.env.RESEND_API_KEY;
         this.fromAddress = `${process.env.EMAIL_FROM_NAME || 'Dating App'} <${process.env.EMAIL_FROM_ADDRESS || 'onboarding@resend.dev'}>`;
 
-        if (!process.env.RESEND_API_KEY) {
-            console.error('⚠️  RESEND_API_KEY is not set in .env');
+        if (!this.apiKey) {
+            console.error('⚠️  RESEND_API_KEY is not set — email sending will be disabled');
+            this.resend = null;
         } else {
+            this.resend = new Resend(this.apiKey);
             console.log('✅ Resend email service initialized (HTTPS API)');
         }
     }
 
     // ── Send Email ──────────────────────────────────────────
     async sendEmail(to, subject, html) {
+        if (!this.resend) {
+            throw new Error('Email service not configured. RESEND_API_KEY is missing.');
+        }
+
         try {
             const { data, error } = await this.resend.emails.send({
                 from: this.fromAddress,
