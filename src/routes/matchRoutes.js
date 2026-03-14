@@ -365,7 +365,7 @@ router.post('/:matchId/messages', matchController.sendMessage);
  *             properties:
  *               status:
  *                 type: string
- *                 enum: [hidden, blocked]
+ *                 enum: [hidden, blocked, unhide, unblock]
  *                 example: hidden
  *     responses:
  *       200:
