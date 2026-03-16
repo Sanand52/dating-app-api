@@ -10,6 +10,9 @@ const Badge = require('./badgeModel');
 const UserBadge = require('./userBadgeModel');
 const MatchCriteria = require('./matchCriteriaModel');
 const TopPick = require('./topPickModel');
+const Notification = require('./notificationModel');
+const SubscriptionPlan = require('./subscriptionPlanModel');
+const Subscription = require('./userSubscriptionModel');
 
 // Register all models
 const models = {
@@ -21,6 +24,9 @@ const models = {
     UserBadge,
     MatchCriteria,
     TopPick,
+    Notification,
+    SubscriptionPlan,
+    Subscription,
 };
 
 // Define associations
@@ -59,6 +65,18 @@ function setupAssociations() {
     User.hasMany(TopPick, { foreignKey: 'pickedUserId', as: 'PickedByOthers' });
     TopPick.belongsTo(User, { foreignKey: 'userId', as: 'ForUser' });
     TopPick.belongsTo(User, { foreignKey: 'pickedUserId', as: 'PickedUser' });
+
+    // User ↔ Notification
+    User.hasMany(Notification, { foreignKey: 'userId', as: 'Notifications' });
+    Notification.belongsTo(User, { foreignKey: 'userId', as: 'ForUser' });
+
+    // User ↔ Subscription
+    User.hasMany(Subscription, { foreignKey: 'userId', as: 'Subscriptions' });
+    Subscription.belongsTo(User, { foreignKey: 'userId', as: 'Subscriber' });
+
+    // SubscriptionPlan ↔ Subscription
+    SubscriptionPlan.hasMany(Subscription, { foreignKey: 'planId', as: 'Subscriptions' });
+    Subscription.belongsTo(SubscriptionPlan, { foreignKey: 'planId', as: 'Plan' });
 }
 
 setupAssociations();

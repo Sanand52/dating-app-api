@@ -11,6 +11,8 @@ const matchCriteriaRoutes = require('./matchCriteriaRoutes');
 const topPickRoutes = require('./topPickRoutes');
 const discoveryRoutes = require('./discoveryRoutes');
 const swipeRoutes = require('./swipeRoutes');
+const notificationRoutes = require('./notificationRoutes');
+const subscriptionRoutes = require('./subscriptionRoutes');
 
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
@@ -22,5 +24,7 @@ router.use('/match-criteria', matchCriteriaRoutes);
 router.use('/top-picks', topPickRoutes);
 router.use('/discovery', discoveryRoutes);
 router.use('/swipes', swipeRoutes);
+router.use('/notifications', notificationRoutes);
+router.use('/subscriptions', subscriptionRoutes);
 
 module.exports = router;

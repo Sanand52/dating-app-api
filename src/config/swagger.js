@@ -33,6 +33,24 @@ const options = {
                 },
             },
             schemas: {
+                SubscriptionPlan: {
+                    type: 'object',
+                    properties: {
+                        id: { type: 'integer', example: 1 },
+                        name: { type: 'string', example: 'Gold' },
+                        duration: { type: 'integer', example: 30 },
+                        price: { type: 'number', example: 499.0 },
+                        currency: { type: 'string', example: 'INR' },
+                        features: {
+                            type: 'array',
+                            items: { type: 'string' },
+                            example: ['unlimited_likes', 'see_who_likes_you']
+                        },
+                        isActive: { type: 'boolean', example: true },
+                        createdAt: { type: 'string', format: 'date-time' },
+                        updatedAt: { type: 'string', format: 'date-time' },
+                    },
+                },
                 User: {
                     type: 'object',
                     properties: {
